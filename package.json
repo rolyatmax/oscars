@@ -1,0 +1,26 @@
+{
+  "name": "oscars",
+  "version": "1.0.0",
+  "description": "looking at oscars data",
+  "scripts": {
+    "postinstall": "cp node_modules/standard/eslintrc.json .eslintrc || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rolyatmax/oscars.git"
+  },
+  "author": "Taylor Baldwin <taylorbaldwin@gmail.com> (https://tbaldw.in)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rolyatmax/oscars/issues"
+  },
+  "homepage": "https://github.com/rolyatmax/oscars#readme",
+  "dependencies": {
+    "get-pixels": "^3.3.0",
+    "get-rgba-palette": "^2.0.1",
+    "promisify-node": "^0.4.0"
+  },
+  "devDependencies": {
+    "standard": "^8.6.0"
+  }
+}
