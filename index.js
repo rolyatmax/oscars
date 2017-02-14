@@ -13,19 +13,27 @@ const filmEls = films.map(film => {
 
   const screenshots = palettes[film]
 
-  const size = 300
+  const size = 450
   const padding = size * 0.05 | 0
   const canvas = createCanvas(size, size, padding)
   filmEl.appendChild(canvas)
   const ctx = canvas.getContext('2d')
   const center = [size / 2 | 0, size / 2 | 0]
   const maxMagnitude = (size / 2 | 0) - padding
+
+  // draw all connections first
   screenshots.forEach(screenshot => {
     const screenshotCenter = getCenter(screenshot, maxMagnitude, center)
     screenshot.forEach(color => {
       const start = getCoordForColor(color, maxMagnitude, center)
       drawLine(ctx, start, screenshotCenter, '#efefef')
-      drawCircle(ctx, screenshotCenter, 2, '#ddd')
+      drawCircle(ctx, screenshotCenter, 2, '#ccc')
+    })
+  })
+
+  // draw colored circles on top of the connections
+  screenshots.forEach(screenshot => {
+    screenshot.forEach(color => {
       plotColor(ctx, color, center, maxMagnitude)
     })
   })
