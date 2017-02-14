@@ -22,7 +22,12 @@ const filmEls = films.map(film => {
   const center = [width / 2 | 0, height / 2 | 0]
   const maxMagnitude = (Math.min(width, height) / 2 | 0) - padding
   screenshots.forEach(screenshot => {
-    screenshot.forEach(color => plotColor(ctx, color, center, maxMagnitude))
+    const screenshotCenter = getCenter(screenshot, maxMagnitude, center)
+    screenshot.forEach(color => {
+      const start = getCoordForColor(color, maxMagnitude, center)
+      drawLine(ctx, start, screenshotCenter, '#eee')
+      plotColor(ctx, color, center, maxMagnitude)
+    })
   })
 
   const screenshotsContainer = document.createElement('div')
@@ -52,15 +57,29 @@ function createCanvas (width, height, padding) {
   return canvas
 }
 
-function plotColor (ctx, color, center, wheelSize) {
+function getCenter (colors, wheelSize, center) {
+  const positions = colors.map(color => getCoordForColor(color, wheelSize, center))
+  const totals = positions.reduce((totals, [x, y]) => [totals[0] + x, totals[1] + y], [0, 0])
+  return totals.map(coord => coord / positions.length)
+}
+
+function getCoordForColor (color, wheelSize, center) {
   color = Color.rgb(color)
-  const [hue, saturation, luminocity] = color.hsl().array()
+  const [hue, , luminocity] = color.hsl().array()
   const rads = hue / 360 * Math.PI * 2
   const magnitude = wheelSize * (1 - (luminocity / 100))
-  const x = Math.cos(rads) * magnitude + center[0]
-  const y = Math.sin(rads) * magnitude + center[1]
+  return [
+    Math.cos(rads) * magnitude + center[0],
+    Math.sin(rads) * magnitude + center[1]
+  ]
+}
+
+function plotColor (ctx, color, center, wheelSize) {
+  const position = getCoordForColor(color, wheelSize, center)
+  color = Color.rgb(color)
+  const [, saturation] = color.hsl().array()
   const circleSize = saturation / 100 * 10
-  drawCircle(ctx, [x, y], circleSize, color.toString())
+  drawCircle(ctx, position, circleSize, color.toString())
 }
 
 function drawCircle (ctx, position, radius, color) {
@@ -68,4 +87,12 @@ function drawCircle (ctx, position, radius, color) {
   ctx.beginPath()
   ctx.arc(position[0], position[1], radius, 0, Math.PI * 2)
   ctx.fill()
+}
+
+function drawLine (ctx, start, end, color) {
+  ctx.strokeStyle = color
+  ctx.beginPath()
+  ctx.moveTo(start[0], start[1])
+  ctx.lineTo(end[0], end[1])
+  ctx.stroke()
 }
