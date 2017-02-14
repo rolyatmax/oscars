@@ -1,4 +1,6 @@
-import palettes from './data/color-palettes.json'
+import palettes from './data/color-palettes-filtered.json'
+// import palettes from './data/color-palettes.json'
+import Color from 'color'
 
 const container = document.querySelector('.container')
 
@@ -8,7 +10,23 @@ const filmEls = films.map(film => {
   const filmEl = document.createElement('div')
   filmEl.classList.add('film')
   filmEl.innerHTML = `<h2>${film}</h2>`
+
   const screenshots = palettes[film]
+
+  const width = 275
+  const height = 275
+  const padding = 15
+  const canvas = createCanvas(width, height, padding)
+  filmEl.appendChild(canvas)
+  const ctx = canvas.getContext('2d')
+  const center = [width / 2 | 0, height / 2 | 0]
+  const maxMagnitude = (Math.min(width, height) / 2 | 0) - padding
+  screenshots.forEach(screenshot => {
+    screenshot.forEach(color => plotColor(ctx, color, center, maxMagnitude))
+  })
+
+  const screenshotsContainer = document.createElement('div')
+  screenshotsContainer.classList.add('screenshots')
   const screenshotDivs = screenshots.map(colors => {
     const ul = document.createElement('ul')
     colors.forEach(color => {
@@ -18,8 +36,36 @@ const filmEls = films.map(film => {
     })
     return ul
   })
-  screenshotDivs.forEach(div => filmEl.appendChild(div))
+  screenshotDivs.forEach(div => screenshotsContainer.appendChild(div))
+  filmEl.appendChild(screenshotsContainer)
   return filmEl
 })
 
 filmEls.forEach(filmEl => container.appendChild(filmEl))
+
+function createCanvas (width, height, padding) {
+  const canvas = document.createElement('canvas')
+  canvas.height = height
+  canvas.width = width
+  canvas.style.height = `${height}px`
+  canvas.style.width = `${width}px`
+  return canvas
+}
+
+function plotColor (ctx, color, center, wheelSize) {
+  color = Color.rgb(color)
+  const [hue, saturation, luminocity] = color.hsl().array()
+  const rads = hue / 360 * Math.PI * 2
+  const magnitude = wheelSize * (1 - (luminocity / 100))
+  const x = Math.cos(rads) * magnitude + center[0]
+  const y = Math.sin(rads) * magnitude + center[1]
+  const circleSize = saturation / 100 * 10
+  drawCircle(ctx, [x, y], circleSize, color.toString())
+}
+
+function drawCircle (ctx, position, radius, color) {
+  ctx.fillStyle = color
+  ctx.beginPath()
+  ctx.arc(position[0], position[1], radius, 0, Math.PI * 2)
+  ctx.fill()
+}

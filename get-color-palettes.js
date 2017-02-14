@@ -11,6 +11,8 @@ const films = [
   'silence'
 ]
 
+const COLOR_THRESHOLD = 0.03
+
 Promise.all(films.map(processFilm)).then((filmPalettes) => {
   const out = {}
   filmPalettes.forEach((palettes, i) => {
@@ -30,5 +32,9 @@ function processFilm (film) {
 }
 
 function getColorPalette (filename) {
-  return getPixels(filename).then((result) => getPalette(Array.from(result.data), 5))
+  return getPixels(filename).then((result) => {
+    return getPalette.bins(Array.from(result.data), 5)
+      .filter(bin => bin.amount > COLOR_THRESHOLD)
+      .map(bin => bin.color)
+  })
 }

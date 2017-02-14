@@ -4,25 +4,38 @@ html, body {
 }
 
 .container {
-  width: 800px;
+  width: 85vw;
   margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+canvas {
+  background: #fafafa;
+  margin: 15px 0;
 }
 
 .film {
   margin: 2em auto;
   padding: 10px;
-  width: 375px;
-  display: inline-block;
+  width: 275px;
+}
+
+.screenshots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
 }
 
 .film ul {
-  display: inline-block;
   padding: 0;
   margin: 5px;
 }
 
 .film li {
-  height: 10px;
-  width: 20px;
+  height: 12px;
+  width: 16px;
   display: inline-block;
 }

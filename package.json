@@ -20,6 +20,7 @@
   "homepage": "https://github.com/rolyatmax/oscars#readme",
   "dependencies": {
     "budo": "^9.4.7",
+    "color": "^1.0.3",
     "get-pixels": "^3.3.0",
     "get-rgba-palette": "^2.0.1",
     "promisify-node": "^0.4.0"
