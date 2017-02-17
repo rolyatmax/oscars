@@ -11,30 +11,29 @@ const films = [
   'silence'
 ]
 
-const COLOR_THRESHOLD = 0.03
+const screenshotsDir = 'data/screenshots'
 
-Promise.all(films.map(processFilm)).then((filmPalettes) => {
-  const out = {}
-  filmPalettes.forEach((palettes, i) => {
-    const filmName = films[i]
-    out[filmName] = palettes
-  })
+Promise.all(films.map(processFilm)).then((filmObjects) => {
+  const out = filmObjects.reduce((out, filmObj) => Object.assign(out, filmObj), {})
   process.stdout.write(JSON.stringify(out))
 }).catch((err) => { console.error(err) })
 
 function processFilm (film) {
-  const screenshotsDir = `data/screenshots/${film}`
-  const screenshots = fs.readdirSync(screenshotsDir)
+  const screenshots = fs.readdirSync(`${screenshotsDir}/${film}`)
     .filter(name => name.includes('.jpg'))
-    .map(name => `${screenshotsDir}/${name}`)
-  const promises = screenshots.map(getColorPalette)
-  return Promise.all(promises)
+    .map(name => `${film}/${name}`)
+  const promises = screenshots.map(processScreenshot)
+  return Promise.all(promises).then((palettes) => ({ [film]: palettes }))
 }
 
-function getColorPalette (filename) {
-  return getPixels(filename).then((result) => {
-    return getPalette.bins(Array.from(result.data), 5)
-      .filter(bin => bin.amount > COLOR_THRESHOLD)
-      .map(bin => bin.color)
+function processScreenshot (filename) {
+  const filepath = `${screenshotsDir}/${filename}`
+  return getPixels(filepath).then((result) => {
+    const colors = getPalette.bins(Array.from(result.data), 5)
+      .map(({ color, amount }) => ({ color, amount }))
+    return {
+      src: filename,
+      colors: colors
+    }
   })
 }
