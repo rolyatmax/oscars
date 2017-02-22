@@ -1,0 +1,52 @@
+html, body {
+  font-family: 'Ubuntu', monospace;
+  color: #333
+}
+
+.container {
+  width: 85vw;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+canvas {
+  background: #fafafa;
+  margin: 15px 0;
+}
+
+.film {
+  margin: 2em auto;
+  padding: 10px;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.screenshots {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.screenshots img {
+  width: 80px;
+  height: 46px;
+  margin: 5px;
+  object-fit: cover;
+}
+
+.film ul {
+  padding: 0;
+  margin: 5px;
+}
+
+.film li {
+  height: 12px;
+  width: 16px;
+  display: inline-block;
+}
