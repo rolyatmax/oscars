@@ -1,4 +1,5 @@
 import palettes from '../data/color-palettes.json'
+import sortBy from 'lodash/sortBy'
 import Color from 'color'
 import {GUI} from 'dat-gui'
 import yo from 'yo-yo'
@@ -97,11 +98,18 @@ function renderViz (ctx, screenshots, padding) {
 }
 
 function drawColorCircles (ctx, center, size, screenshots) {
-  screenshots.forEach(screenshot => {
-    const colors = getColorsFromScreenshot(screenshot)
-    colors.forEach(color => {
-      plotColor(ctx, color, center, size)
-    })
+  const colors = screenshots.reduce((colors, screenshot) => {
+    return colors.concat(getColorsFromScreenshot(screenshot))
+  }, [])
+  const sortedColors = sortBy(colors, (color) => {
+    const [, saturation, lightness] = Color.rgb(color).hsl().array()
+    const dimensions = { saturation, lightness }
+    const value = dimensions[settings.circleSizeDimension]
+    // reversing the order so the largest circles are painted first
+    return settings.circleSizeDimensionNegative ? value : -value
+  })
+  sortedColors.forEach(color => {
+    plotColor(ctx, color, center, size)
   })
 }
 
