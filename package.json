@@ -7,6 +7,7 @@
     "standard": "^8.6.0"
   },
   "dependencies": {
+    "gl-vec2": "^1.0.0",
     "lorem-hipsum": "^0.1.7",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
